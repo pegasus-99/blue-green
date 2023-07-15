@@ -5,5 +5,5 @@ provider "aws" {
 
 # Create a provider called random
 provider "random" {
-    version = "~> 2.0"
+    # version = "3.5.1"
 }

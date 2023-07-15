@@ -4,9 +4,8 @@ variable "region" {
   default     = "us-east-2"
 }
 
-# Create a random pet 
-resource "random_pet" "name" {
-  length    = 2
-  separator = "-"
-  prefix = "bg"
+# Create a variable for VPC cidr block
+variable "vpc_cidr" {
+  description = "VPC cidr block"
+  default     = "10.0.0.0/16"
 }
