@@ -21,14 +21,14 @@ resource "aws_lb_target_group" "blue" {
   vpc_id   = module.vpc.vpc_id
 
   health_check {
-    # path                = "/index.html"
-    port                = 80
-    protocol            = "HTTP"
-    # matcher             = "200"
-    interval            = 30
-    timeout             = 5
-    # healthy_threshold   = 3
-    # unhealthy_threshold = 3
+      path                = "/healthcheck.html"
+      port                = 80
+      protocol            = "HTTP"
+      matcher             = "200"
+      interval            = 30
+      timeout             = 5
+      healthy_threshold   = 2
+      unhealthy_threshold = 2
   }
 }
 
