@@ -4,9 +4,9 @@ module "vpc" {
   name = random_pet.name.id
   cidr = var.vpc_cidr
 
-  azs             = data.aws_availability_zones.available.names
-#   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-#   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  azs = data.aws_availability_zones.available.names
+  #   private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  #   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
   private_subnets = slice(var.private_subnet_cidr_blocks, 0, var.private_subnet_count)
   public_subnets  = slice(var.public_subnet_cidr_blocks, 0, var.public_subnet_count)
 
@@ -14,9 +14,9 @@ module "vpc" {
   enable_vpn_gateway = false
 
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Environment = "dev"
-    name = random_pet.name.id
+    name        = random_pet.name.id
   }
 }
 
@@ -57,6 +57,22 @@ resource "aws_lb_listener" "app" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.blue.arn
+    /* target_group_arn = aws_lb_target_group.blue.arn */
+        forward {
+            target_group {
+              arn    = aws_lb_target_group.blue.arn
+              weight = lookup(local.traffic_dist_map[var.traffic_distribution], "blue", 100)
+            }
+
+            target_group {
+              arn    = aws_lb_target_group.green.arn
+              weight = lookup(local.traffic_dist_map[var.traffic_distribution], "green", 0)
+            }
+
+            stickiness {
+              enabled  = false
+              duration = 1
+            }
+        }
   }
 }

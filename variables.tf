@@ -67,3 +67,47 @@ variable "enable_blue_env" {
   type = bool
   default     = true
 }
+
+# create a boolean variable for enabling green instance
+variable "enable_green_env" {
+  description = "Enable green environment"
+  type = bool
+  default     = true
+}
+
+# create a variable for the count of green instances
+variable "green_instance_count" {
+  description = "Number of green instances"
+  type = number
+  default     = 6
+}
+
+locals {
+  traffic_dist_map = {
+    blue = {
+      blue  = 100
+      green = 0
+    }
+    blue-90 = {
+      blue  = 90
+      green = 10
+    }
+    split = {
+      blue  = 50
+      green = 50
+    }
+    green-90 = {
+      blue  = 10
+      green = 90
+    }
+    green = {
+      blue  = 0
+      green = 100
+    }
+  }
+}
+
+variable "traffic_distribution" {
+  description = "Levels of traffic distribution"
+  type        = string
+}
